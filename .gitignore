@@ -37,7 +37,3 @@
 /tmp/thumbnails/*
 /vendor/cache
 *.rbc
-
-/.bundle
-/Gemfile.local
-
