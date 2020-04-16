@@ -4,6 +4,9 @@ ruby '>= 2.3.0', '< 2.7.0'
 gem 'bundler', '>= 1.12.0'
 
 gem 'rails', '5.2.4.2'
+gem 'slack-notifier'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-facebook'
 gem 'sprockets', '~> 3.7.2' if RUBY_VERSION < '2.5'
 gem 'rouge', '~> 3.17.0'
 gem 'request_store', '~> 1.5.0'
@@ -77,6 +80,10 @@ end
 group :development do
   gem "yard"
 end
+
+gem "letter_opener"
+
+gem 'pry'
 
 group :test do
   gem "rails-dom-testing"

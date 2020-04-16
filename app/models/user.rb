@@ -130,6 +130,7 @@ class User < Principal
   before_destroy :remove_references_before_destroy
   after_save :update_notified_project_ids, :destroy_tokens, :deliver_security_notification
   after_destroy :deliver_security_notification
+  after_create :notify
 
   scope :admin, lambda {|*args|
     admin = args.size > 0 ? !!args.first : true
@@ -152,6 +153,26 @@ class User < Principal
       none
     end
   }
+
+  def notify
+    notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
+    notifier.ping "New User: #{mail}"
+  end
+
+  def self.from_omniauth(auth)
+    # Creates a new user only if it doesn't exist
+    user = find_by_mail(auth.info.email) || User.new
+    user.firstname = auth.info.name.split.first
+    user.lastname = auth.info.name.split.last
+    if auth.info.email.nil?
+      user.login = auth.uid
+      user.mail = "#{auth.uid}@#{auth.provider}.com"
+    else
+      user.login = auth.info.email
+      user.mail = auth.info.email
+    end
+    user
+  end
 
   def set_mail_notification
     self.mail_notification = Setting.default_notification_option if self.mail_notification.blank?

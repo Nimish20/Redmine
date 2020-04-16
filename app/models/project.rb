@@ -84,6 +84,7 @@ class Project < ActiveRecord::Base
   after_save :remove_inherited_member_roles, :add_inherited_member_roles, :if => Proc.new {|project| project.saved_change_to_parent_id?}
   after_update :update_versions_from_hierarchy_change, :if => Proc.new {|project| project.saved_change_to_parent_id?}
   before_destroy :delete_all_members
+  after_create :notify
 
   scope :has_module, lambda {|mod|
     where("#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s)
@@ -107,6 +108,11 @@ class Project < ActiveRecord::Base
   scope :having_trackers, lambda {
     where("#{Project.table_name}.id IN (SELECT DISTINCT project_id FROM #{table_name_prefix}projects_trackers#{table_name_suffix})")
   }
+
+  def notify
+    notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
+    notifier.ping "New Project: #{name}"
+  end
 
   def initialize(attributes=nil, *args)
     super

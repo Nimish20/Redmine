@@ -55,6 +55,10 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/auth/:provider/callback', :to => 'sessions#Auth'
+  get 'auth/facebook/callback', :to => 'sessions#Auth'
+  get 'auth/failure', :to => redirect('/')
+
   get '/projects/:project_id/issues/gantt', :to => 'gantts#show', :as => 'project_gantt'
   get '/issues/gantt', :to => 'gantts#show'
 
