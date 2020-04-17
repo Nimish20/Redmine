@@ -155,8 +155,8 @@ class User < Principal
   }
 
   def notify
-    notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
-    notifier.ping "New User: #{mail}"
+    notifier = Slack::Notifier.new ENV[WEBHOOK_URL]
+    notifytifier.ping "New User: #{mail}"
   end
 
   def self.from_omniauth(auth)
